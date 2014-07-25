@@ -21,4 +21,24 @@ class ofApp : public ofBaseApp{
 
 		ofVideoPlayer videoPlayers[4];
 		int currentPlayerId;
+		
+		//arduino
+		int valueA0;
+		int valueD2;
+		int valueD3;
+		int valueD4;
+		int valueD5;
+		
+		ofArduino arduino;
+		bool		bSetupArduino;			// flag variable for setting up arduino once
+private:
+    
+    void setupArduino(const int & version);
+    void digitalPinChanged(const int & pinNum);
+    void analogPinChanged(const int & pinNum);
+		void updateArduino();
+		string potValue;
+		string buttonState;
+		
+		ofImage waitingImage;
 };
