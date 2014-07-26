@@ -1,5 +1,6 @@
 #pragma once
 
+#define VIDEO_NUMBER 4
 #include "ofMain.h"
 
 class ofApp : public ofBaseApp{
@@ -19,8 +20,8 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		ofVideoPlayer videoPlayers[4];
-		int currentPlayerId;
+		ofVideoPlayer videoPlayers[VIDEO_NUMBER];
+		ofVideoPlayer waitingVideoPlayer;
 		
 		//arduino
 		int valueA0;

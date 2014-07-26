@@ -8,9 +8,14 @@ void ofApp::setup(){
 		videoPlayers[2].loadMovie("shuriken.mov");
 		videoPlayers[3].loadMovie("keyboard.mov");
 		
+		waitingVideoPlayer.loadMovie("waiting.mov");
+		waitingVideoPlayer.setLoopState(OF_LOOP_NORMAL);
+		waitingVideoPlayer.setVolume(0);
+		waitingVideoPlayer.play();
+		
 		ofSetRectMode(OF_RECTMODE_CENTER);
 		ofBackground(ofColor::lightBlue);
-		for (int i = 0; i<4; i++) {
+		for (int i = 0; i<VIDEO_NUMBER; i++) {
 				videoPlayers[i].setLoopState(OF_LOOP_NONE);
 		}
 		ofHideCursor();
@@ -75,9 +80,10 @@ void ofApp::setupArduino(const int & version) {
 
 //--------------------------------------------------------------
 void ofApp::update(){
-		if (currentPlayerId != -1) {
-				videoPlayers[currentPlayerId].update();
+		for (int i = 0; i<VIDEO_NUMBER; i++) {
+				videoPlayers[i].update();
 		}
+		waitingVideoPlayer.update();
 		updateArduino();
 }
 
@@ -108,46 +114,67 @@ void ofApp::digitalPinChanged(const int & pinNum) {
 		if (!arduino.getDigital(pinNum)) {
 				switch (pinNum) {
 						case 2:
-								videoPlayers[currentPlayerId].stop();
-								videoPlayers[currentPlayerId].setPosition(0);
-								currentPlayerId = 0;
-								videoPlayers[currentPlayerId].play();
+								videoPlayers[0].setPosition(0);
+								videoPlayers[0].play();
 								break;
 						case 3:
-								videoPlayers[currentPlayerId].stop();
-								videoPlayers[currentPlayerId].setPosition(0);
-								currentPlayerId = 1;
-								videoPlayers[currentPlayerId].play();
+								videoPlayers[1].setPosition(0);
+								videoPlayers[1].play();
 								break;
 						case 4:
-								videoPlayers[currentPlayerId].stop();
-								videoPlayers[currentPlayerId].setPosition(0);
-								currentPlayerId = 2;
-								videoPlayers[currentPlayerId].play();
+								videoPlayers[2].setPosition(0);
+								videoPlayers[2].play();
 								break;
 						case 5:
-								videoPlayers[currentPlayerId].stop();
-								videoPlayers[currentPlayerId].setPosition(0);
-								currentPlayerId = 3;
-								videoPlayers[currentPlayerId].play();
+								videoPlayers[3].setPosition(0);
+								videoPlayers[3].play();
 								break;
 						default:
 								break;
 				}
 		}else if(arduino.getDigital(pinNum)){
-				videoPlayers[currentPlayerId].stop();
-				videoPlayers[currentPlayerId].setPosition(0);
+				videoPlayers[pinNum].stop();
+				videoPlayers[pinNum].setPosition(0);
 		}
 }
 
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-		if (currentPlayerId != -1) {
-				videoPlayers[currentPlayerId].draw(ofGetWidth()/2.0, ofGetHeight()/2.0, ofGetWidth(), ofGetHeight());
+		// waiting
+		int playingVideoNumber = 0;
+		for (int i = 0 ; i<VIDEO_NUMBER; i++) {
+				playingVideoNumber += videoPlayers[i].isPlaying();
 		}
-		if (!videoPlayers[0].isPlaying() && !videoPlayers[1].isPlaying() && !videoPlayers[2].isPlaying() && !videoPlayers[3].isPlaying()) {
-				waitingImage.draw(ofGetWidth()/2.0, ofGetHeight()/2.0, ofGetWidth(), ofGetHeight());
+		if (!playingVideoNumber) {
+				waitingVideoPlayer.draw(ofGetWidth()/2.0, ofGetHeight()/2.0, ofGetWidth(), ofGetHeight());
+		}else if(playingVideoNumber == 1){
+				for (int i = 0; i<VIDEO_NUMBER; i++) {
+						if (videoPlayers[i].isPlaying()) {
+								videoPlayers[i].draw(ofGetWidth()/2.0, ofGetHeight()/2.0, ofGetWidth(), ofGetHeight());
+						}
+				}
+		}else if(playingVideoNumber > 1 || playingVideoNumber <= 4){
+				if (videoPlayers[0].isPlaying()) {
+						videoPlayers[0].draw(ofGetWidth()/4.0, ofGetHeight()/4.0, ofGetWidth()/2.0, ofGetHeight()/2.0);
+				}else{
+						waitingImage.draw(ofGetWidth()/4.0, ofGetHeight()/4.0, ofGetWidth()/2.0, ofGetHeight()/2.0);
+				}
+				if (videoPlayers[1].isPlaying()) {
+						videoPlayers[1].draw(ofGetWidth()*3.0/4.0, ofGetHeight()/4.0, ofGetWidth()/2.0, ofGetHeight()/2.0);
+				}else{
+						waitingImage.draw(ofGetWidth()*3.0/4.0, ofGetHeight()/4.0, ofGetWidth()/2.0, ofGetHeight()/2.0);
+				}
+				if (videoPlayers[2].isPlaying()) {
+						videoPlayers[2].draw(ofGetWidth()/4.0, ofGetHeight()*3.0/4.0, ofGetWidth()/2.0, ofGetHeight()/2.0);
+				}else{
+						waitingImage.draw(ofGetWidth()/4.0, ofGetHeight()*3.0/4.0, ofGetWidth()/2.0, ofGetHeight()/2.0);
+				}
+				if (videoPlayers[3].isPlaying()) {
+						videoPlayers[3].draw(ofGetWidth()*3.0/4.0, ofGetHeight()*3.0/4.0, ofGetWidth()/2.0, ofGetHeight()/2.0);
+				}else{
+						waitingImage.draw(ofGetWidth()*3.0/4.0, ofGetHeight()*3.0/4.0, ofGetWidth()/2.0, ofGetHeight()/2.0);
+				}
 		}
 		
 		ofLogNotice(ofToString(valueA0)+ofToString(bSetupArduino)+" D2:"+ofToString(valueD2)+"/"+" D3:"+ofToString(valueD3)+"/"+" D4:"+ofToString(valueD4)+"/"+" D5:"+ofToString(valueD5));
@@ -160,31 +187,23 @@ void ofApp::keyPressed(int key){
 						ofToggleFullscreen();
 						break;
 				case '1':
-						videoPlayers[currentPlayerId].stop();
-						videoPlayers[currentPlayerId].setPosition(0);
-						currentPlayerId = 0;
-						videoPlayers[currentPlayerId].play();
+						videoPlayers[0].setPosition(0);
+						videoPlayers[0].play();
 						break;
 				case '2':
-						videoPlayers[currentPlayerId].stop();
-						videoPlayers[currentPlayerId].setPosition(0);
-						currentPlayerId = 1;
-						videoPlayers[currentPlayerId].play();
+						videoPlayers[1].setPosition(0);
+						videoPlayers[1].play();
 						break;
 				case '3':
-						videoPlayers[currentPlayerId].stop();
-						videoPlayers[currentPlayerId].setPosition(0);
-						currentPlayerId = 2;
-						videoPlayers[currentPlayerId].play();
+						videoPlayers[2].setPosition(0);
+						videoPlayers[2].play();
 						break;
 				case '4':
-						videoPlayers[currentPlayerId].stop();
-						videoPlayers[currentPlayerId].setPosition(0);
-						currentPlayerId = 3;
-						videoPlayers[currentPlayerId].play();
+						videoPlayers[3].setPosition(0);
+						videoPlayers[3].play();
 						break;
 				case ' ':
-						for (int i = 0; i<4; i++) {
+						for (int i = 0; i<VIDEO_NUMBER; i++) {
 								videoPlayers[i].stop();
 								videoPlayers[i].setPosition(0);
 						}
