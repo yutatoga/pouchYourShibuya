@@ -4,9 +4,9 @@
 void ofApp::setup(){
 //		ofToggleFullscreen();
 		videoPlayers[0].loadMovie("mask.mov");
-		videoPlayers[1].loadMovie("umbrella.mov");
+		videoPlayers[1].loadMovie("omikuji.mov");
 		videoPlayers[2].loadMovie("shuriken.mov");
-		videoPlayers[3].loadMovie("keyboard.mov");
+		videoPlayers[3].loadMovie("umbrella.mov");
 		
 		waitingVideoPlayer.loadMovie("waiting.mov");
 		waitingVideoPlayer.setLoopState(OF_LOOP_NORMAL);
@@ -109,7 +109,7 @@ void ofApp::digitalPinChanged(const int & pinNum) {
     // do something with the digital input. here we're simply going to print the pin number and
     // value to the screen each time it changes
     buttonState = "digital pin: " + ofToString(pinNum) + " = " + ofToString(arduino.getDigital(pinNum));
-		ofLogNotice("digitalPinChanged!");
+		ofLogNotice("digitalPinChanged!"+buttonState);
 		
 		if (!arduino.getDigital(pinNum)) {
 				switch (pinNum) {
@@ -133,8 +133,26 @@ void ofApp::digitalPinChanged(const int & pinNum) {
 								break;
 				}
 		}else if(arduino.getDigital(pinNum)){
-				videoPlayers[pinNum].stop();
-				videoPlayers[pinNum].setPosition(0);
+				switch (pinNum) {
+						case 2:
+								videoPlayers[0].stop();
+								videoPlayers[0].setPosition(0);
+								break;
+						case 3:
+								videoPlayers[1].stop();
+								videoPlayers[1].setPosition(0);
+								break;
+						case 4:
+								videoPlayers[2].stop();
+								videoPlayers[2].setPosition(0);
+								break;
+						case 5:
+								videoPlayers[3].stop();
+								videoPlayers[3].setPosition(0);
+								break;
+						default:
+								break;
+				}
 		}
 }
 
