@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 //		ofToggleFullscreen();
+		ofSetFrameRate(30);
+		ofSetVerticalSync(true);
 		videoPlayers[0].loadMovie("mask.mov");
 		videoPlayers[1].loadMovie("omikuji.mov");
 		videoPlayers[2].loadMovie("shuriken.mov");
@@ -40,8 +42,8 @@ void ofApp::setupArduino(const int & version) {
     bSetupArduino = true;
     
     // print firmware name and version to the console
-    ofLogNotice() << arduino.getFirmwareName();
-    ofLogNotice() << "firmata v" << arduino.getMajorFirmwareVersion() << "." << arduino.getMinorFirmwareVersion();
+//    ofLogNotice() << arduino.getFirmwareName();
+//    ofLogNotice() << "firmata v" << arduino.getMajorFirmwareVersion() << "." << arduino.getMinorFirmwareVersion();
 		
     // Note: pins A0 - A5 can be used as digital input and output.
     // Refer to them as pins 14 - 19 if using StandardFirmata from Arduino 1.0.
@@ -81,9 +83,13 @@ void ofApp::setupArduino(const int & version) {
 //--------------------------------------------------------------
 void ofApp::update(){
 		for (int i = 0; i<VIDEO_NUMBER; i++) {
-				videoPlayers[i].update();
+				if (videoPlayers[i].isPlaying()) {
+						videoPlayers[i].update();
+				}
 		}
-		waitingVideoPlayer.update();
+		if (waitingVideoPlayer.isPlaying()) {
+				waitingVideoPlayer.update();
+		}
 		updateArduino();
 }
 
@@ -109,7 +115,7 @@ void ofApp::digitalPinChanged(const int & pinNum) {
     // do something with the digital input. here we're simply going to print the pin number and
     // value to the screen each time it changes
     buttonState = "digital pin: " + ofToString(pinNum) + " = " + ofToString(arduino.getDigital(pinNum));
-		ofLogNotice("digitalPinChanged!"+buttonState);
+//		ofLogNotice("digitalPinChanged!"+buttonState);
 		
 		if (!arduino.getDigital(pinNum)) {
 				switch (pinNum) {
@@ -154,11 +160,22 @@ void ofApp::digitalPinChanged(const int & pinNum) {
 								break;
 				}
 		}
+		int playingVideoNumber = 0;
+		for (int i =0; i<VIDEO_NUMBER; i++) {
+				playingVideoNumber += videoPlayers[i].isPlaying();
+		}
+		if (!playingVideoNumber) {
+				waitingVideoPlayer.setPosition(0);
+				waitingVideoPlayer.play();
+		}else{
+				waitingVideoPlayer.stop();
+		}
 }
 
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+		
 		// waiting
 		int playingVideoNumber = 0;
 		for (int i = 0 ; i<VIDEO_NUMBER; i++) {
@@ -195,7 +212,7 @@ void ofApp::draw(){
 				}
 		}
 		
-		ofLogNotice(ofToString(valueA0)+ofToString(bSetupArduino)+" D2:"+ofToString(valueD2)+"/"+" D3:"+ofToString(valueD3)+"/"+" D4:"+ofToString(valueD4)+"/"+" D5:"+ofToString(valueD5));
+//		ofLogNotice(ofToString(valueA0)+ofToString(bSetupArduino)+" D2:"+ofToString(valueD2)+"/"+" D3:"+ofToString(valueD3)+"/"+" D4:"+ofToString(valueD4)+"/"+" D5:"+ofToString(valueD5));
 }
 
 //--------------------------------------------------------------
@@ -225,6 +242,8 @@ void ofApp::keyPressed(int key){
 								videoPlayers[i].stop();
 								videoPlayers[i].setPosition(0);
 						}
+						waitingVideoPlayer.setPosition(0);
+						waitingVideoPlayer.play();
 				default:
 						break;
 		}

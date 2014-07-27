@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>4DD7D2C7-97B6-4A59-8A71-2258B59C23AB</string>
+	<key>IDESourceControlProjectName</key>
+	<string>pouchYourShibuya</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>24733188-0007-4AD7-AF44-EBADFF62CAAB</key>
+		<string>https://github.com/yutatoga/pouchYourShibuya.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>pouchYourShibuya.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>24733188-0007-4AD7-AF44-EBADFF62CAAB</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/yutatoga/pouchYourShibuya.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>24733188-0007-4AD7-AF44-EBADFF62CAAB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>24733188-0007-4AD7-AF44-EBADFF62CAAB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>pouchYourShibuya</string>
+		</dict>
+	</array>
+</dict>
+</plist>
